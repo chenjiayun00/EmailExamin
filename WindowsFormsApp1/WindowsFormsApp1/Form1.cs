@@ -15,27 +15,14 @@ namespace WindowsFormsApp1
     {
         [DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
         public static extern void keybd_event(Keys bVk, byte bScan, uint dwFlags, uint dwExtraInfo);
+        private int waitTime;//间隔时间
+        private Thread thread;
+
         public Form1()
         {
             InitializeComponent();
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            Form2 frm = new Form2();
-            frm.Show();
-
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            //int x = MousePosition.X;
-            //int y = MousePosition.Y;
-            //tbx_RefreshX.Text = x.ToString() + "," + y.ToString();
-            //this.KeyUp += Form1_KeyUp;
             this.KeyUp += new KeyEventHandler(this.Form1_KeyUp);
         }
-
        
         /// <summary>
         /// 按键按下事件
@@ -51,19 +38,13 @@ namespace WindowsFormsApp1
             {
                 string MousePoint = "";
                 MousePoint = GetMousePoint();
-                if (e.KeyCode.ToString() == "D1")
+                if (e.KeyCode.ToString() == "R")
                 {
                     tbx_RefreshX.Text = MousePoint.Split(',')[0];
                     tbx_RefreshY.Text = MousePoint.Split(',')[1];
                 }
 
-                if (e.KeyCode.ToString() == "D2")
-                {
-                    tbx_SelectX.Text = MousePoint.Split(',')[0];
-                    tbx_SelectY.Text = MousePoint.Split(',')[1];
-                }
-
-                if (e.KeyCode.ToString() == "D3")
+                if (e.KeyCode.ToString() == "S")
                 {
                     tbx_ExaminX.Text = MousePoint.Split(',')[0];
                     tbx_ExaminY.Text = MousePoint.Split(',')[1];
@@ -87,17 +68,8 @@ namespace WindowsFormsApp1
             //tbx_Refresh.Text = x.ToString() + "," + y.ToString();
         }
 
-        private void Button1_Click_1(object sender, EventArgs e)//线程实验
-        {
-            ThreadDemo.Threa();
-        }
 
-        private void Tbn_Select_Click(object sender, EventArgs e)
-        {
-            textBox1.Text = "SALFIJSOTALFJLAGA\na;gjdasgadjlg";
-            //textBox1.Focus();
-            SelectALL();
-        }
+       
 
         private void Tbn_examin_Click(object sender, EventArgs e)//读取审核位置坐标，并执行鼠标单击事件
         {
@@ -118,9 +90,19 @@ namespace WindowsFormsApp1
 
         private void Btn_start_Click(object sender, EventArgs e)
         {
-            Thread thread = new Thread(new ThreadStart(Action));
+            try
+            {
+                waitTime = int.Parse(cbbSpanTime.Text);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + "(间隔时间格式不正确！)");
+                return;
+            }
+            thread = new Thread(new ThreadStart(Action));
             thread.IsBackground=true;
             thread.Start();
+            MessageBox.Show(thread.ManagedThreadId.ToString() + "正在" + thread.ThreadState.ToString());
         }
         public void Action()
         {
@@ -133,7 +115,7 @@ namespace WindowsFormsApp1
                 Thread.Sleep(2000);
 
                 Examin();
-                Thread.Sleep(5000);
+                Thread.Sleep(5000 * waitTime);
 
 
             }
@@ -178,10 +160,11 @@ namespace WindowsFormsApp1
             
         }
 
-        private void Tbn_Refresh_Click(object sender, EventArgs e)
+        private void BtnStop_Click(object sender, EventArgs e)
         {
-            Refreshed();
-           
+            thread.Abort();
+            MessageBox.Show(thread.ManagedThreadId.ToString() + thread.IsAlive.ToString());
+            
         }
     }
 

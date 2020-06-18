@@ -43,7 +43,6 @@ namespace WindowsFormsApp1
                 //这里模拟的是一个鼠标单击事件
                 mouse_event((int)(MouseEventFlags.LeftDown | MouseEventFlags.Absolute), X, Y, 0, IntPtr.Zero);
                 mouse_event((int)(MouseEventFlags.LeftUp | MouseEventFlags.Absolute), X, Y, 0, IntPtr.Zero);
-                //mouse_event((int)(MouseEventFlags.LeftDown | MouseEventFlags.Absolute), X, Y, 0, IntPtr.Zero);
 
                 //mouse_event((int)(MouseEventFlags.LeftUp | MouseEventFlags.Absolute), X, Y, 0, IntPtr.Zero);
                 //mouse_event((int)(MouseEventFlags.LeftDown | MouseEventFlags.Absolute), X, Y, 0, IntPtr.Zero);
